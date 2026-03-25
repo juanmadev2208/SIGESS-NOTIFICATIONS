@@ -12,11 +12,38 @@ app.use(express.json({ limit: "10mb" }));
 app.use(morgan("combined"));
 
 app.get("/", (_req, res) => {
-  return res.status(200).json({ ok: true, data: { status: "UP" } });
+  return res.status(200).json({
+    ok: true,
+    message: "SIGESS Notifications API is running",
+    data: {
+      service: "sigess-notifications-ms",
+      status: "UP",
+      timestamp: new Date().toISOString(),
+      endpoints: {
+        health: "/health",
+        notificationsBase: "/v1/notifications",
+        sendTemplate: "POST /v1/notifications/email/template",
+        sendCustom: "POST /v1/notifications/email/custom"
+      },
+      auth: {
+        required: true,
+        methods: ["x-api-key header", "Authorization: Bearer <token>"]
+      }
+    }
+  });
 });
 
 app.get("/health", (_req, res) => {
-  return res.status(200).json({ ok: true, data: { status: "UP" } });
+  return res.status(200).json({
+    ok: true,
+    message: "Health check passed",
+    data: {
+      service: "sigess-notifications-ms",
+      status: "UP",
+      uptimeSeconds: Math.floor(process.uptime()),
+      timestamp: new Date().toISOString()
+    }
+  });
 });
 
 app.use("/v1/notifications", notificationsRoutes);

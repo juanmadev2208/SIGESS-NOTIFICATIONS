@@ -21,7 +21,13 @@ function authMiddleware(req, res, next) {
     ok: false,
     error: {
       code: "UNAUTHORIZED",
-      message: "Missing or invalid credentials"
+      message: "Missing or invalid credentials. Provide x-api-key or Authorization Bearer token.",
+      details: {
+        route: req.originalUrl,
+        method: req.method,
+        acceptedAuth: ["x-api-key: <NOTIFICATIONS_API_KEY>", "Authorization: Bearer <NOTIFICATIONS_BEARER_TOKEN>"],
+        note: "At least one valid credential is required"
+      }
     }
   });
 }
