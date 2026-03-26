@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const notificationsRoutes = require("./modules/notifications/notifications.routes");
+const { specs, swaggerUi } = require("./swagger");
 
 const app = express();
 
@@ -10,6 +11,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("combined"));
+
+// Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get("/", (_req, res) => {
   return res.status(200).json({
