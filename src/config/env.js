@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const env = {
-  PORT: process.env.PORT || 8080,
+  PORT: Number(process.env.PORT || 3000),
   NODE_ENV: process.env.NODE_ENV || "development",
   NOTIFICATIONS_API_KEY: process.env.NOTIFICATIONS_API_KEY || "",
   NOTIFICATIONS_BEARER_TOKEN: process.env.NOTIFICATIONS_BEARER_TOKEN || "",
