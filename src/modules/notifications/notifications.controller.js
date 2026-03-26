@@ -17,6 +17,34 @@ async function sendTemplate(req, res, next) {
         }
       });
     }
+    // Handle provider errors with proper status codes
+    if (error.code === "SMTP_TIMEOUT") {
+      return res.status(504).json({
+        ok: false,
+        error: {
+          code: "SMTP_TIMEOUT",
+          message: "Email service timeout - please retry"
+        }
+      });
+    }
+    if (error.code === "SMTP_AUTH_FAILED") {
+      return res.status(500).json({
+        ok: false,
+        error: {
+          code: "SMTP_AUTH_FAILED",
+          message: "Email service authentication failed"
+        }
+      });
+    }
+    if (error.code === "SMTP_CONNECTION_FAILED") {
+      return res.status(503).json({
+        ok: false,
+        error: {
+          code: "SMTP_CONNECTION_FAILED",
+          message: "Email service unavailable"
+        }
+      });
+    }
     return next(error);
   }
 }
@@ -34,6 +62,34 @@ async function sendCustom(req, res, next) {
           code: "VALIDATION_ERROR",
           message: "Invalid request body",
           details: error.flatten()
+        }
+      });
+    }
+    // Handle provider errors with proper status codes
+    if (error.code === "SMTP_TIMEOUT") {
+      return res.status(504).json({
+        ok: false,
+        error: {
+          code: "SMTP_TIMEOUT",
+          message: "Email service timeout - please retry"
+        }
+      });
+    }
+    if (error.code === "SMTP_AUTH_FAILED") {
+      return res.status(500).json({
+        ok: false,
+        error: {
+          code: "SMTP_AUTH_FAILED",
+          message: "Email service authentication failed"
+        }
+      });
+    }
+    if (error.code === "SMTP_CONNECTION_FAILED") {
+      return res.status(503).json({
+        ok: false,
+        error: {
+          code: "SMTP_CONNECTION_FAILED",
+          message: "Email service unavailable"
         }
       });
     }

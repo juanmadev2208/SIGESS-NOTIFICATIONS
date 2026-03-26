@@ -2,6 +2,13 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+// Validate critical environment variables
+const criticalVars = ["SMTP_HOST", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM"];
+const missing = criticalVars.filter((v) => !process.env[v]);
+if (missing.length > 0) {
+  console.error(`[env.js] Missing critical variables during config load: ${missing.join(", ")}`);
+}
+
 const env = {
   PORT: Number(process.env.PORT || 3000),
   NODE_ENV: process.env.NODE_ENV || "development",
