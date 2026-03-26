@@ -5,10 +5,7 @@ const { env } = require("../../../config/env");
 class NodemailerProvider extends EmailProvider {
   constructor() {
     super("smtp_nodemailer");
-    this.transporter = nodemailer.createTransport({
-      host: env.SMTP_HOST,
-      port: env.SMTP_PORT,
-      secure: env.SMTP_SECURE,
+    const transportBase = {
       auth: {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS
@@ -18,8 +15,25 @@ class NodemailerProvider extends EmailProvider {
       greetingTimeout: 5000,
       socketTimeout: 10000,
       logger: false,
-      debug: false
-    });
+      debug: false,
+      tls: {
+        rejectUnauthorized: env.SMTP_TLS_REJECT_UNAUTHORIZED
+      }
+    };
+
+    const transportConfig = env.SMTP_SERVICE
+      ? {
+          ...transportBase,
+          service: env.SMTP_SERVICE
+        }
+      : {
+          ...transportBase,
+          host: env.SMTP_HOST,
+          port: env.SMTP_PORT,
+          secure: env.SMTP_SECURE
+        };
+
+    this.transporter = nodemailer.createTransport(transportConfig);
     this.verifyOnInit();
   }
 
@@ -34,8 +48,11 @@ class NodemailerProvider extends EmailProvider {
   }
 
   validateConfig() {
-    const required = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM"];
+    const required = ["SMTP_USER", "SMTP_PASS", "EMAIL_FROM"];
     const missing = required.filter((key) => !env[key]);
+    if (!env.SMTP_SERVICE && !env.SMTP_HOST) {
+      missing.push("SMTP_HOST|SMTP_SERVICE");
+    }
     if (missing.length) {
       const err = new Error(`Missing SMTP config: ${missing.join(", ")}`);
       err.code = "MISSING_PROVIDER_CONFIG";

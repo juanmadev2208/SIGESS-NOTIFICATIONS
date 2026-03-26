@@ -14,7 +14,11 @@ const PORT = env.PORT;
 
 const server = app.listen(PORT, HOST, () => {
   console.log(`[notifications-ms] ✓ listening on ${HOST}:${PORT} (${env.NODE_ENV})`);
-  console.log(`[notifications-ms] ✓ SMTP: ${env.SMTP_HOST}:${env.SMTP_PORT} (secure=${env.SMTP_SECURE})`);
+  if (env.SMTP_SERVICE) {
+    console.log(`[notifications-ms] ✓ SMTP service: ${env.SMTP_SERVICE}`);
+  } else {
+    console.log(`[notifications-ms] ✓ SMTP: ${env.SMTP_HOST}:${env.SMTP_PORT} (secure=${env.SMTP_SECURE})`);
+  }
   console.log(`[notifications-ms] ✓ Email from: ${env.EMAIL_FROM}`);
 });
 
