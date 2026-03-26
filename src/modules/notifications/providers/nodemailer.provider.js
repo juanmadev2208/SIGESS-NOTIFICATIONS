@@ -34,7 +34,11 @@ class NodemailerProvider extends EmailProvider {
         };
 
     this.transporter = nodemailer.createTransport(transportConfig);
-    this.verifyOnInit();
+    if (env.SMTP_VERIFY_ON_STARTUP) {
+      this.verifyOnInit();
+    } else {
+      console.log("[notifications-ms] SMTP verify on startup is disabled");
+    }
   }
 
   async verifyOnInit() {

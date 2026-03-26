@@ -2,8 +2,11 @@ const app = require("./app");
 const { env } = require("./config/env");
 
 // Startup validation
-const requiredVars = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM"];
-const missing = requiredVars.filter((v) => !env[v]);
+const missing = [];
+if (!env.SMTP_USER) missing.push("SMTP_USER|EMAIL_USER");
+if (!env.SMTP_PASS) missing.push("SMTP_PASS|EMAIL_PASS");
+if (!env.EMAIL_FROM) missing.push("EMAIL_FROM");
+if (!env.SMTP_SERVICE && !env.SMTP_HOST) missing.push("SMTP_HOST|SMTP_SERVICE");
 if (missing.length > 0) {
   console.error(`[notifications-ms] ✗ Missing critical vars: ${missing.join(", ")}`);
   process.exit(1);

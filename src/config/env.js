@@ -4,7 +4,8 @@ dotenv.config();
 
 const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER || "";
 const smtpPass = process.env.SMTP_PASS || process.env.EMAIL_PASS || "";
-const smtpService = process.env.SMTP_SERVICE || (process.env.SMTP_HOST === "smtp.gmail.com" ? "gmail" : "");
+const smtpService =
+  process.env.SMTP_SERVICE || (process.env.SMTP_HOST ? "" : "gmail");
 
 // Validate critical environment variables
 const criticalVars = ["EMAIL_FROM"];
@@ -29,7 +30,9 @@ const env = {
   SMTP_PASS: smtpPass,
   SMTP_TLS_REJECT_UNAUTHORIZED:
     String(process.env.SMTP_TLS_REJECT_UNAUTHORIZED || "false").toLowerCase() === "true",
-  EMAIL_FROM: process.env.EMAIL_FROM || "no-reply@example.com",
+  SMTP_VERIFY_ON_STARTUP:
+    String(process.env.SMTP_VERIFY_ON_STARTUP || "false").toLowerCase() === "true",
+  EMAIL_FROM: process.env.EMAIL_FROM || smtpUser || "no-reply@example.com",
   EMAIL_SUPPORT: process.env.EMAIL_SUPPORT || "support@example.com",
   EMAIL_LOGO_URL: process.env.EMAIL_LOGO_URL || "",
   FRONTEND_URL: process.env.FRONTEND_URL || ""
